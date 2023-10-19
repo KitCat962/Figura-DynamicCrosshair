@@ -7,7 +7,7 @@
 --                                                --
 --================================================--
 
---v2.3
+--v3.0
 
 local customCrosshair = ...
 local model = models:newPart("Katt$DynamicCrosshair", "GUI")
