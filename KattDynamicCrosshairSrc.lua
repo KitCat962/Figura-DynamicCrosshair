@@ -46,11 +46,10 @@ function events.RENDER(delta)
   local screenSpace = vectors.worldToScreenSpace(pos)
 
   local coords = screenSpace.xy:add(1, 1):mul(client:getScaledWindowSize()):div(-2, -2)
-  if customCrosshair then
-    model:setPos(coords.xy_)
-        :setVisible(screenSpace.z >= 1)
-        :setScale(3 / screenSpace.w)
-  else
+  model:setPos(coords.xy_)
+      :setVisible(screenSpace.z >= 1)
+      :setScale(3 / screenSpace.w)
+  if not customCrosshair then
     renderer:setCrosshairOffset(screenSpace.xy:mul(client:getScaledWindowSize()):div(2, 2))
   end
 
