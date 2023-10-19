@@ -15,8 +15,10 @@ if type(customCrosshair) == "ModelPart" then
   local p = customCrosshair:getParent()
   if p then p:removeChild(customCrosshair) end
   model:addChild(customCrosshair)
+  renderer:setRenderCrosshair(false)
   customCrosshair = true
 else
+  renderer:setRenderCrosshair(true)
   customCrosshair = false
 end
 local pos = vectors.vec3()
