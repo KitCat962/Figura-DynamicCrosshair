@@ -9,14 +9,15 @@
 
 --v2.3
 
-local curDir = (...):gsub("(.)$", "%1.")
-local model
-do
-  local tmpModel = models
-  for value in string.gmatch(curDir, "(.-)%.") do
-    tmpModel = tmpModel[value]
-  end
-  model = tmpModel.Crosshair:setParentType("GUI")
+local customCrosshair = ...
+local model = models:newPart("Katt$DynamicCrosshair", "GUI")
+if type(customCrosshair) == "ModelPart" then
+  local p = customCrosshair:getParent()
+  if p then p:removeChild(customCrosshair) end
+  model:addChild(customCrosshair)
+  customCrosshair = true
+else
+  customCrosshair = false
 end
 local pos = vectors.vec3()
 
@@ -26,9 +27,8 @@ end
 function events.ENTITY_INIT() pos:set(player:getPos()) end
 
 ---@class KattDynamicCrosshairAPI
----@field model ModelPart
----@field render fun(pos:Vector3, target:Entity|BlockState, screenCoords:Vector2)
-local api = { model = model }
+---@field render fun(model:ModelPart, pos:Vector3, target:Entity|BlockState, screenCoords:Vector2)
+local api = {}
 
 function events.RENDER(delta)
   local entity, entityPos = player:getTargetedEntity(host:getReachDistance())
@@ -42,13 +42,17 @@ function events.RENDER(delta)
   pos:set(math.lerp(pos, targetPos, 0.35))
 
   local screenSpace = vectors.worldToScreenSpace(pos)
+
   local coords = screenSpace.xy:add(1, 1):mul(client:getScaledWindowSize()):div(-2, -2)
+  if customCrosshair then
+    model:setPos(coords.xy_)
+        :setVisible(screenSpace.z >= 1)
+        :setScale(3 / screenSpace.w)
+  else
+    renderer:setCrosshairOffset(screenSpace.xy:mul(client:getScaledWindowSize()):div(2, 2))
+  end
 
-  if api.render then api.render(pos, entity or block, coords) end
-
-  model:setPos(coords.xy_)
-      :setVisible(screenSpace.z >= 1)
-      :setScale(3 / screenSpace.w)
+  if api.render then api.render(model, pos, entity or block, coords) end
 end
 
 return api
