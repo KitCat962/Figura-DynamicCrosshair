@@ -1,3 +1,6 @@
 {
-    "autoScripts": ["compile","KattDynamicCrosshair"]
+    "autoScripts": [
+        "compile",
+        "KattDynamicCrosshair"
+    ]
 }
